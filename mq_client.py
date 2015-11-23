@@ -3,8 +3,6 @@ import pika
 from pika import adapters
 import sys
 
-VERSION = '0.0.2.5'
-
 
 def _on_message(channel, method, header, body):
     """
@@ -364,7 +362,10 @@ class AsyncMQPublisher(AsyncMQClient):
         self._logger.info('Stopping')
         self._stopping = True
         self.close_connection()
-        self._connection.ioloop.start()  # supposedly this is necessary...
+        try:
+            self._connection.ioloop.start()  # supposedly this is necessary...
+        except Exception as e:
+            pass
         self._logger.info('Stopped')
 
 
@@ -469,6 +470,9 @@ class AsyncMQConsumer(AsyncMQClient):
         self._logger.info('Stopping')
         self._closing = True
         self.stop_consuming()
-        self._connection.ioloop.start()
+        try:
+            self._connection.ioloop.start()  # supposedly this is necessary...
+        except Exception as e:
+            pass
         self._logger.info('Stopped')
 
