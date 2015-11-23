@@ -52,16 +52,16 @@ This command is an example listener which will echo any messages it recieves.
 ```
 $ mqlisten --help
 usage: mqlisten [-h] [--url URL] [--exchange EXCHANGE]
-                [--exchange_type EXCHANGE_TYPE] [--queue QUEUE]
-                [--routing_key ROUTING_KEY]
+                [--exchange-type EXCHANGE_TYPE] [--queue QUEUE]
+                [--routing-key ROUTING_KEY]
 
 optional arguments:
   -h, --help            show this help message and exit
   --url URL
   --exchange EXCHANGE
-  --exchange_type EXCHANGE_TYPE
+  --exchange-type EXCHANGE_TYPE
   --queue QUEUE
-  --routing_key ROUTING_KEY
+  --routing-key ROUTING_KEY
 ```
 
 ##### mqpublish
@@ -71,8 +71,8 @@ This command publishes a single message using the configuration specified.
 ```
 $ mqpublish --help
 usage: mqpublish [-h] [--url URL] [--exchange EXCHANGE]
-                 [--exchange_type EXCHANGE_TYPE] [--queue QUEUE]
-                 [--routing_key ROUTING_KEY]
+                 [--exchange-type EXCHANGE_TYPE] [--queue QUEUE]
+                 [--routing-key ROUTING_KEY]
                  message
 
 positional arguments:
@@ -82,7 +82,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --url URL
   --exchange EXCHANGE
-  --exchange_type EXCHANGE_TYPE
+  --exchange-type EXCHANGE_TYPE
   --queue QUEUE
-  --routing_key ROUTING_KEY
+  --routing-key ROUTING_KEY
 ```

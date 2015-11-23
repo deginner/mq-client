@@ -33,9 +33,9 @@ def run():
     parser = argparse.ArgumentParser()
     parser.add_argument('--url', default="amqp://guest:guest@localhost:5672/%2F")
     parser.add_argument('--exchange', default="test_exchange")
-    parser.add_argument('--exchange_type', default="direct")
+    parser.add_argument('--exchange-type', default="direct")
     parser.add_argument('--queue', default="test_queue")
-    parser.add_argument('--routing_key', default="mq.text")
+    parser.add_argument('--routing-key', default="mq.text")
     args = parser.parse_args()
 
     listen_and_echo(args)
