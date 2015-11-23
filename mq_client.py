@@ -1,7 +1,10 @@
+"""
+Client classes to help manage pika connections.
+
+"""
 import logging
 import pika
 from pika import adapters
-import sys
 
 
 def _on_message(channel, method, header, body):
@@ -25,14 +28,17 @@ def _on_message(channel, method, header, body):
 
     # Acknowledge message receipt
     channel.basic_ack(method.delivery_tag)
-    
+
     # when ready, stop consuming
     channel.stop_consuming()
 
 
-class BlockingMQClient():
-    def __init__(self, url, exchange, exchange_type="direct", routing_key="", 
-                 cfg=None):
+class BlockingMQClient(object):
+    """
+    A client using BlockingConnection. The BlockingMQClient is not tested.
+    """
+
+    def __init__(self, url, exchange, exchange_type="direct", routing_key=""):
         self.connection = pika.BlockingConnection(pika.URLParameters(url))
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange=exchange,
@@ -43,6 +49,11 @@ class BlockingMQClient():
 
 
     def publish(self, message):
+        """
+        Publish a message to the queue.
+
+        :param str message: The message to send
+        """
         props = pika.BasicProperties(content_type='text/plain', delivery_mode=1)
         self.channel.basic_publish(self._exchange,
                                    self._routing_key,
@@ -50,14 +61,21 @@ class BlockingMQClient():
                                    props)
 
     def consume(self, on_message, queue):
+        """
+        Publish a message to the queue.
+
+        :param function on_message: Function to call upon recieving a message
+        :param str queue: The queue to publish to
+        """
         self.channel.queue_declare(queue=queue, durable=True, exclusive=False,
                                    auto_delete=False)
         self.channel.queue_bind(queue=queue, exchange=self._exchange,
-                           routing_key=self._routing_key)
+                                routing_key=self._routing_key)
         self.channel.basic_qos(prefetch_count=1)
         # Setup up our consumer callback
         self.channel.basic_consume(on_message, queue)
-        # This is blocking until channel.stop_consuming is called and will allow us to receive messages
+        # This is blocking until channel.stop_consuming is called
+        # and will allow us to receive messages
         self.channel.start_consuming()
 
 
@@ -71,7 +89,7 @@ class AsyncMQClient(object):
 
     def __init__(self, amqp_url,
                  exchange='test_exchange',
-                 exchange_type='direct', 
+                 exchange_type='direct',
                  queue='test_queue',
                  routing_key='mq.text',
                  content_type='text/plain',
@@ -151,7 +169,7 @@ class AsyncMQClient(object):
             self._connection.ioloop.stop()
         else:
             self._logger.warning('Connection closed, reopening in 5 seconds: (%s) %s',
-                           reply_code, reply_text)
+                                 reply_code, reply_text)
             self._connection.add_timeout(5, self.reconnect)
 
     def reconnect(self):
@@ -252,7 +270,7 @@ class AsyncMQClient(object):
         """
         self._logger.info('Declaring queue %s', queue_name)
         self._channel.queue_declare(self.on_queue_declareok, queue_name,
-                                    durable=True, exclusive=False, 
+                                    durable=True, exclusive=False,
                                     auto_delete=False)
 
     def on_queue_declareok(self, method_frame):
@@ -266,7 +284,7 @@ class AsyncMQClient(object):
         :param pika.frame.Method method_frame: The Queue.DeclareOk frame
         """
         self._logger.debug('Binding %s to %s with %s',
-                    self._exchange, self._queue, self._routing_key)
+                           self._exchange, self._queue, self._routing_key)
         self._channel.queue_bind(self.on_bindok, self._queue,
                                  self._exchange, self._routing_key)
         self._channel.basic_qos(prefetch_count=1)
@@ -430,7 +448,7 @@ class AsyncMQConsumer(AsyncMQClient):
         :param pika.frame.Method method_frame: The Basic.Cancel frame
         """
         self._logger.info('Consumer was cancelled remotely, shutting down: %r',
-                    method_frame)
+                          method_frame)
         if self._channel:
             self._channel.close()
 
