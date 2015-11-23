@@ -2,7 +2,13 @@
 
 A client for a [RabbitMQ](http://rabbitmq.com/) message queue server. This "client" is really a set of wrappers and helpers for the [pika](http://pika.readthedocs.org/) client library.
 
-# Consumer Example
+## Install
+
+This package is in Pypi and can be installed using pip.
+
+`pip install mq-client`
+
+## Consumer Example
 
 To create a consumer client, initialized an instance of `AsyncMQConsumer` with a custom `on_message` function defined. This function will be called every time the client receives a message.
 
@@ -20,7 +26,7 @@ consumer = AsyncMQConsumer("amqp://guest:guest@localhost:5672/%2F",
 consumer.run()
 ```
 
-# Publisher Example
+## Publisher Example
 
 To create a publisher client, initialized an instance of `AsyncMQPublisher` with a custom `producer` function defined. This function will be called in a loop until the client is stopped, and is expected to publish messages to the queue.
 
@@ -35,11 +41,11 @@ publisher = AsyncMQPublisher(args.url,
 publisher.run()
 ```
 
-# Commands
+## Commands
 
 This package comes with helper commands for easy debugging of your message queue.
 
-### mqlisten
+##### mqlisten
 
 This command is an example listener which will echo any messages it recieves.
 
@@ -58,7 +64,7 @@ optional arguments:
   --routing_key ROUTING_KEY
 ```
 
-### mqpublish
+##### mqpublish
 
 This command publishes a single message using the configuration specified.
 
